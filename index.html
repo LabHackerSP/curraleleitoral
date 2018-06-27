@@ -30,7 +30,7 @@
 
 
     #controls {
-      width: 35vw;
+      width: 400px;
       height:100vw;
       float:right;
 			padding-left:20px;
@@ -147,14 +147,14 @@ function round(geojson) {
 	});
 
   geojson.eachLayer(function (layer) {
-		layer.setStyle({fillColor :''})
+		layer.setStyle({fillColor :'', fillOpacity:0.2})
     /*Debug
 		var image = "imgs/"+layer.feature.properties.votacao_V15.replace('.','').replace(/ /g,"_")+".jpg"
 		console.log(image)
 		L.imageOverlay(image, layer._bounds.pad(-0.3)).addTo(map)
 		*/
     if(layer.feature.properties.OBJECTID == selected.feature.properties.OBJECTID) {
-  layer.setStyle({fillColor :'yellow'})
+  layer.setStyle({fillColor :'red',fillOpacity:1})
   }
 });
 
@@ -173,13 +173,15 @@ function round(geojson) {
         })
 
 	$.when(zonas).done(function(){
-    map = L.map('map').setView([-23.789865, -46.634021],11);
+    map = L.map('map').setView([-23.959865, -46.634021],11);
 
     var basemap = L.tileLayer('').addTo(map);;
 
-    geojson = L.geoJson(zonas.responseJSON, {});
+    geojson = L.geoJson(zonas.responseJSON, {
+			style : { color: 'black'}
+		});
     geojson.addTo(map)
-		map.fitBounds(geojson.getBounds());
+		//map.fitBounds(geojson.getBounds());
 
 
 
