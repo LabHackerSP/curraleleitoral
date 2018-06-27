@@ -118,8 +118,8 @@
 </div>
 
 <div class="super"><img class="win" src="imgs/win.gif"></img></div>
-<script type="text/javascript">
 
+<script type="text/javascript">
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -144,10 +144,15 @@ function round(geojson) {
 	$("#controls div").each(function (i) {
 		$(this).find("span").text(options[i]['nome']+ " - " + options[i]['partido'] );
 		$(this).find("span").attr("data-nome", options[i]['nome'])
-	})
+	});
 
   geojson.eachLayer(function (layer) {
 		layer.setStyle({fillColor :''})
+    /*Debug
+		var image = "imgs/"+layer.feature.properties.votacao_V15.replace('.','').replace(/ /g,"_")+".jpg"
+		console.log(image)
+		L.imageOverlay(image, layer._bounds.pad(-0.3)).addTo(map)
+		*/
     if(layer.feature.properties.OBJECTID == selected.feature.properties.OBJECTID) {
   layer.setStyle({fillColor :'yellow'})
   }
@@ -156,7 +161,7 @@ function round(geojson) {
 }
 
 
-  var geojson, selected;
+  var geojson, selected, map;
 	var candidatos = {};
   var zonas = $.ajax({
           url:"spze.geojson",
@@ -168,7 +173,7 @@ function round(geojson) {
         })
 
 	$.when(zonas).done(function(){
-    var map = L.map('map').setView([-23.649865, -46.634021], 10);
+    map = L.map('map').setView([-23.649865, -46.634021], 10);
 
     var basemap = L.tileLayer('').addTo(map);;
 
@@ -211,9 +216,12 @@ function round(geojson) {
 
 		$(".button").click(function () {
       $(this).toggleClass("clicked", 100).toggleClass("clicked");
-			var cand = $(this).find("span").attr("data-nome");
+			console.log(selected);
+				var cand = $(this).find("span").attr("data-nome");
 				if(cand == selected.feature.properties.votacao_V15) {
-		  	$(".super").show(0).delay(2000).hide(0)
+				$(".super").show(0).delay(2000).hide(0)
+				var image = "imgs/"+selected.feature.properties.votacao_V15.replace('.','').replace(/ /g,"_")+".jpg"
+				L.imageOverlay(image, selected._bounds.pad(-0.3)).addTo(map)
 				round(geojson)
 		  }
 
