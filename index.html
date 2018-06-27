@@ -86,7 +86,7 @@
 			left:0;
 			background-color:#000;
 			z-index: 99999;
-			opacity:0.9;
+			opacity:1;
 			text-align: center;
 			padding-top:120px;
 			display:none;
@@ -196,19 +196,20 @@ function round(geojson) {
 
   $().ready(function () {
 		$(document).keypress(function(e) {
-			if(e.which == 113) {
+			console.log(e.which);
+			if(e.which == 99) {
     		// Q
-				$(".blue").click()
-  		}
-			if(e.which == 119) {
-    		// W
 				$(".yellow").click()
   		}
-			if(e.which == 101) {
+			if(e.which == 120) {
+    		// W
+				$(".blue").click()
+  		}
+			if(e.which == 118) {
     		// E
 				$(".white").click()
   		}
-			if(e.which == 114) {
+			if(e.which == 122) {
     		// R
 				$(".black").click()
   		}
