@@ -179,8 +179,8 @@ function round(geojson) {
 
     geojson = L.geoJson(zonas.responseJSON, {});
     geojson.addTo(map)
-    //map.fitBounds(geojson.getBounds());
-    console.log(geojson);
+		map.fitBounds(geojson.getBounds());
+
 
 
 		//Pega os competidores
