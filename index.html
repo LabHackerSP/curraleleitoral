@@ -23,16 +23,16 @@
 			overflow: hidden;
 		}
 		#map {
-			width: 600px;
-			height: 600px;
+			width: 60vw;
+			height: 100vw;
       float:left;
 		}
 
 
     #controls {
-      width: 400px;
-      height:600px;
-      float:left;
+      width: 35vw;
+      height:100vw;
+      float:right;
 			padding-left:20px;
     }
 
@@ -173,7 +173,7 @@ function round(geojson) {
         })
 
 	$.when(zonas).done(function(){
-    map = L.map('map').setView([-23.649865, -46.634021], 10);
+    map = L.map('map').setView([-23.789865, -46.634021],11);
 
     var basemap = L.tileLayer('').addTo(map);;
 
