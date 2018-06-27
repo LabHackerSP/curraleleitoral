@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+	<title>Curral Eleitoral</title>
+
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link rel="shortcut icon" type="image/x-icon" href="docs/images/favicon.ico" />
+
+    <link rel="stylesheet" href="css/leaflet.css" crossorigin=""/>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+
+    <script src="js/leaflet.js" crossorigin=""></script>
+
+
+	<style>
+		html, body {
+			height: 100%;
+			margin: 0;
+			overflow: hidden;
+		}
+		#map {
+			width: 600px;
+			height: 600px;
+      float:left;
+		}
+
+
+    #controls {
+      width: 400px;
+      height:600px;
+      float:left;
+			padding-left:20px;
+    }
+
+		#controls h1 {
+			padding-top:0px;
+			margin-top:0px;
+		}
+    .button {
+      width: 180px;
+      height:180px;
+      border:5px solid #999;
+      float: left;
+      margin:5px;
+			border-radius: 50%
+    }
+
+		.label {
+			display:block;
+			margin-top:80px;
+			text-align:center;
+			width:180px;
+		}
+
+    .yellow {
+      background-color: yellow;
+    }
+
+    .blue {
+      background-color: blue;
+			color:white;
+    }
+
+    .black {
+      background-color: black;
+			color:white;
+    }
+
+    .white {
+      background-color: white;
+    }
+
+    .clicked {
+      background-color:#999;
+    }
+
+		.super {
+			width:100%;
+			height:100%;
+			position:absolute;
+			top:0;
+			left:0;
+			background-color:#000;
+			z-index: 99999;
+			opacity:0.9;
+			text-align: center;
+			padding-top:120px;
+			display:none;
+		}
+
+		.super img {
+			width:400px;
+			opacity:1;
+		}
+
+	</style>
+
+
+</head>
+<body>
+
+<div class="main">
+	<div id='map'></div>
+	<div id='controls'>
+
+		<h1>Descubra o candidato mais votado em cada Zona Eleitoral!</h1>
+		<h2 id="zona"></h2>
+
+	  <div id="yellow" class="button yellow"><span class="label"></span></div>
+	  <div id="blue" class="button blue"><span class="label"></span></div>
+	  <div id="black" class="button black"><span class="label"></span></div>
+	  <div id="white" class="button white"><span class="label"></span></div>
+	</div>
+</div>
+
+<div class="super"><img class="win" src="imgs/win.gif"></img></div>
+<script type="text/javascript">
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]]; // eslint-disable-line no-param-reassign
+    }
+}
+
+function pickRandomProperty(obj) {
+    var result;
+    var count = 0;
+    for (var prop in obj)
+        if (Math.random() < 1/++count)
+           result = prop;
+    return obj[result];
+}
+
+function round(geojson) {
+  selected = pickRandomProperty(geojson._layers)
+	options = [candidatos[selected.feature.properties.votacao_V15], pickRandomProperty(candidatos),pickRandomProperty(candidatos),pickRandomProperty(candidatos)]
+	shuffleArray(options)
+	$("#zona").text(selected.feature.properties.FIRST_NOME)
+	$("#controls div").each(function (i) {
+		$(this).find("span").text(options[i]['nome']);
+	})
+
+  geojson.eachLayer(function (layer) {
+		layer.setStyle({fillColor :''})
+    if(layer.feature.properties.OBJECTID == selected.feature.properties.OBJECTID) {
+  layer.setStyle({fillColor :'yellow'})
+  }
+});
+
+}
+
+
+  var geojson, selected;
+	var candidatos = {};
+  var zonas = $.ajax({
+          url:"spze.geojson",
+          dataType: "json",
+          success: console.log("County data successfully loaded."),
+          error: function (xhr) {
+            alert(xhr.statusText)
+          }
+        })
+
+	$.when(zonas).done(function(){
+    var map = L.map('map').setView([-23.649865, -46.634021], 10);
+
+    var basemap = L.tileLayer('').addTo(map);;
+
+    geojson = L.geoJson(zonas.responseJSON, {});
+    geojson.addTo(map)
+    //map.fitBounds(geojson.getBounds());
+    console.log(geojson);
+
+
+		//Pega os competidores
+		geojson.eachLayer(function (layer) {
+	    candidatos[layer.feature.properties.votacao_V15] = {
+				'nome' : layer.feature.properties.votacao_V15,
+				'partido' : layer.feature.properties.votacao_V24
+			}
+		});
+
+    round(geojson);
+  });
+
+  $().ready(function () {
+		$(document).keypress(function(e) {
+			if(e.which == 113) {
+    		// Q
+				$(".blue").click()
+  		}
+			if(e.which == 119) {
+    		// W
+				$(".yellow").click()
+  		}
+			if(e.which == 101) {
+    		// E
+				$(".white").click()
+  		}
+			if(e.which == 114) {
+    		// R
+				$(".black").click()
+  		}
+		});
+
+		$(".button").click(function () {
+      $(this).toggleClass("clicked", 100).toggleClass("clicked");
+			var cand = $(this).text()
+
+				if(cand == selected.feature.properties.votacao_V15) {
+		  	$(".super").show(0).delay(2000).hide(0)
+				round(geojson)
+		  }
+
+    });
+
+  })
+
+</script>
+
+
+
+</body>
+</html>
