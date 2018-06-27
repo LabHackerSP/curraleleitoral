@@ -142,7 +142,8 @@ function round(geojson) {
 	shuffleArray(options)
 	$("#zona").text(selected.feature.properties.FIRST_NOME)
 	$("#controls div").each(function (i) {
-		$(this).find("span").text(options[i]['nome']);
+		$(this).find("span").text(options[i]['nome']+ " - " + options[i]['partido'] );
+		$(this).find("span").attr("data-nome", options[i]['nome'])
 	})
 
   geojson.eachLayer(function (layer) {
@@ -210,8 +211,7 @@ function round(geojson) {
 
 		$(".button").click(function () {
       $(this).toggleClass("clicked", 100).toggleClass("clicked");
-			var cand = $(this).text()
-
+			var cand = $(this).find("span").attr("data-nome");
 				if(cand == selected.feature.properties.votacao_V15) {
 		  	$(".super").show(0).delay(2000).hide(0)
 				round(geojson)
