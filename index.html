@@ -78,7 +78,7 @@
       background-color:#999;
     }
 
-		.super {
+		.errou, .super {
 			width:100%;
 			height:100%;
 			position:absolute;
@@ -92,7 +92,7 @@
 			display:none;
 		}
 
-		.super img {
+		.errou img, .super img {
 			width:400px;
 			opacity:1;
 		}
@@ -117,7 +117,8 @@
 	</div>
 </div>
 
-<div class="super"><img class="win" src="imgs/win.gif"></img></div>
+<div class="super"><img src="imgs/win.gif"></img></div>
+<div class="errou"><img src="imgs/errou.jpg"></img></div>
 
 <script type="text/javascript">
 function shuffleArray(array) {
@@ -227,6 +228,10 @@ function round(geojson) {
 				L.imageOverlay(image, selected._bounds.pad(-0.3)).addTo(map)
 				round(geojson)
 		  }
+			else {
+				$(this).find("span").text("X");
+				$(".errou").show(0).delay(500).hide(0)
+			}
 
     });
 
